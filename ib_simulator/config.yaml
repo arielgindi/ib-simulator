@@ -1,0 +1,104 @@
+# Interactive Brokers API Simulator Configuration
+
+server:
+  host: "0.0.0.0"  # Bind to all interfaces, change to specific IP if needed
+  port: 7497  # Paper trading TWS port
+  max_clients: 32
+  buffer_size: 4096
+  socket_timeout: 30.0
+  
+  # Alternative configurations for different environments
+  # Override these with environment variables or command line args
+  environments:
+    local:
+      host: "127.0.0.1"
+      port: 7497
+    docker:
+      host: "0.0.0.0"
+      port: 7497
+    network:
+      host: "192.168.1.100"  # Example LAN IP - change to your actual IP
+      port: 7497
+  
+authentication:
+  # Simulated accounts (mimics GUI login)
+  accounts:
+    - username: "arielgindi"
+      password: "12345678"
+      account_id: "DU1234567"
+      account_type: "PAPER"
+      initial_balance: 100000.00
+      base_currency: "USD"
+
+market:
+  symbols: ["NVDA", "SPY", "QQQ", "AAPL", "TSLA", "AMD", "MSFT", "META"]
+  update_frequency: 1.0  # seconds
+  use_real_data: false  # Use simulated data
+  market_hours:
+    pre_market_start: "04:00"
+    market_open: "09:30"
+    market_close: "16:00"
+    after_hours_end: "20:00"
+  
+trading:
+  # Commission structure
+  commission_per_share: 0.005
+  min_commission: 1.00
+  max_commission_pct: 0.005  # 0.5% of trade value max
+  
+  # Market impact
+  slippage_factor: 0.0001
+  market_impact_factor: 0.0002
+  
+  # Order settings
+  max_order_size: 10000
+  min_order_size: 1
+  
+options:
+  multiplier: 100
+  assignment_probability: 0.05
+  exercise_style: "AMERICAN"
+  
+  # Greeks calculation
+  risk_free_rate: 0.045  # Current T-bill rate
+  dividend_yield: 0.01
+  
+  # Chain generation
+  strikes_above_below: 20  # Number of strikes each side of ATM
+  expiration_months: 3     # Months of expirations to generate
+  
+database:
+  path: "./ib_simulator.db"
+  backup_interval: 3600  # seconds
+  
+protocol:
+  version: 176  # Latest IB API version
+  min_version: 100  # Minimum supported version
+  encoding: "latin-1"
+  heartbeat_interval: 30
+  message_rate_limit: 50  # messages per second
+  
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./ib_simulator.log"
+  
+simulation:
+  # Market data generation
+  volatility_base: 0.02  # 2% daily volatility
+  volatility_multiplier: 1.5  # For high volatility periods
+  
+  # Price movement
+  tick_size: 0.01
+  bid_ask_spread_pct: 0.0001  # 0.01% spread
+  
+  # Volume simulation
+  volume_profile:  # Intraday volume distribution
+    "09:30-10:00": 0.15
+    "10:00-11:00": 0.10
+    "11:00-12:00": 0.08
+    "12:00-13:00": 0.07
+    "13:00-14:00": 0.08
+    "14:00-15:00": 0.12
+    "15:00-15:30": 0.15
+    "15:30-16:00": 0.25
